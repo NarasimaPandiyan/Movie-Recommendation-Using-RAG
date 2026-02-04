@@ -28,8 +28,8 @@ wheels/
 .env
 
 # Data
-# Ignoring large CSVs to prevent git push errors (Files > 100MB)
-data/*.csv
+# We are now tracking CSVs with LFS, so we do NOT ignore them
+# data/*.csv
 !data/.gitkeep
 
 # Temp scripts
