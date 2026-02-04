@@ -28,18 +28,10 @@ wheels/
 .env
 
 # Data
-data/movies_with_embeddings.csv
-# We typically don't commit large generated datasets, but user asked for previous steps. 
-# However, for git, usually we ignore large data files.
-# Let's ignore the large csvs to keep repo clean, unless user specifically asked to commit them?
-# "save the csv so I dont have to do this again" was about creating the file.
-# If I try to commit 500MB+ csvs, git might complain or be slow.
-# I will ignore the large data files and the py scripts we used for automation.
-
+# Ignoring large CSVs to prevent git push errors (Files > 100MB)
 data/*.csv
 !data/.gitkeep
 
 # Temp scripts
 modify_notebook.py
 verify_data_loading.py
-generate_embeddings.ipynb
