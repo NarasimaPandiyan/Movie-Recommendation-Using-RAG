@@ -1,0 +1,59 @@
+---
+title: UI Guide
+description: How to use the MovieBot AI interactive dashboard.
+icon: MonitorPlay
+---
+
+# MovieBot AI Interface
+
+The interactive dashboard (built with Streamlit) provides a user-friendly way to chat with your movie database and fine-tune search results in real-time.
+
+### Getting Started with the Dashboard
+
+To launch the interface, run the following command in your terminal:
+
+```bash
+python app.py
+```
+
+### Key Interface Sections
+
+<Cards>
+  <Card title="Chat Window" description="Ask natural language questions like 'Find me something like Inception but more mind-bending'." />
+  <Card title="Search Settings" description="Adjust how the AI retrieves movies using the sidebar controls." />
+  <Card title="Metadata Inspector" description="Expand the results to see raw database scores and movie ratings." />
+</Cards>
+
+---
+
+### Tuning the Search Engine
+
+The sidebar contains powerful controls to adjust the "intelligence" of the recommendation system.
+
+#### 1. Search Mode
+*   **Hybrid (Recommended)**: Combines keyword matching with semantic vector search.
+*   **Default**: Purely semantic search focusing on the "vibe" and plot.
+*   **Text Search**: Traditional keyword matching for finding exact titles.
+
+#### 2. Alpha (AI vs Keywords)
+The Alpha slider controls the balance of the **Hybrid Search**:
+*   **Alpha = 0.0**: Pure keyword search (Atlas Search).
+*   **Alpha = 1.0**: Pure vector search (Semantic).
+*   **Alpha = 0.7**: Our recommended "Sweet Spot" for the best recommendations.
+
+<Callout type="info">
+  Lowering the Alpha value helps when you are looking for specific actors or titles that the AI might otherwise treat as "similar concepts."
+</Callout>
+
+#### 3. Top-k Results
+Select how many movies you want to see in the response (1 to 10).
+
+---
+
+### Inspecting Results
+
+When the bot gives a recommendation, you can use the **"Movies I found"** expander to see exactly what data was retrieved from MongoDB Atlas, including the source ratings.
+
+<Callout type="idea">
+  Try asking: "Recommend some 90s action movies with a rating above 8.0."
+</Callout>

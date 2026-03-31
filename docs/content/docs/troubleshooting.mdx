@@ -1,0 +1,53 @@
+---
+title: Troubleshooting
+description: A guide for common errors and how to resolve them.
+icon: CircleAlert
+---
+
+# Troubleshooting Guide
+
+If you're having issues running the movie recommendation engine, this page should help you resolve them quickly.
+
+---
+
+### Common Errors & Fixes
+
+<Accordions>
+
+<Accordion title="TypeError: quote_from_bytes() expected bytes">
+**Issue**: This happens in the notebook when `os.getenv("MONGO_PASSWORD")` returns `None`.
+**Fix**: Ensure your `.env` file is in the same directory as the notebook and contains `MONGO_PASSWORD=yourpassword`.
+</Accordion>
+
+<Accordion title="MongoDB: SearchIndexNotFound">
+**Issue**: The vector search query fails because the index hasn't finished syncing yet.
+**Fix**: Wait 2-3 minutes after the initial ingestion for MongoDB Atlas to build the vector and FTS indexes.
+</Accordion>
+
+<Accordion title="Gemini: API Key Invalid">
+**Issue**: The recommendation bot fails to initialize or provides empty responses.
+**Fix**: Verify your `GOOGLE_API_KEY` at [Google AI Studio](https://aistudio.google.com/). Ensure you are using a key for **Gemini 2.5 Flash**.
+</Accordion>
+
+<Accordion title="Streamlit: ModuleNotFoundError">
+**Issue**: Running `python app.py` fails because libraries are missing.
+**Fix**: Ensure you have activated your conda or virtual environment.
+```bash
+conda activate llamaindex 
+pip install streamlit pymongo llama-index-core llama-index-llms-gemini llama-index-embeddings-google-genai llama-index-vector-stores-mongodb
+```
+</Accordion>
+
+</Accordions>
+
+---
+
+### Proactive Checks
+
+<Callout type="idea">
+  **The 🍿 MovieBot AI check**:
+  If the bot gives generic answers, check your **Alpha** value in the sidebar. An Alpha of **0.0** (pure keywords) can feel "mechanical," while an Alpha of **1.0** (pure AI) might be "too creative."
+</Callout>
+
+*   **Network Check**: Ensure your IP address is whitelisted in [MongoDB Atlas Network Access](https://cloud.mongodb.com/).
+*   **Version Check**: Ensure your `llama-index` packages are up to date to support the latest Gemini models.

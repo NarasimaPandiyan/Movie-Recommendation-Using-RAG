@@ -1,0 +1,106 @@
+---
+title: Advanced Usage
+description: Fine-tune the movie recommendation engine and customize system settings.
+icon: Settings2
+---
+
+# Advanced Configuration
+
+For power users, this section explains the project structure and how to customize the underlying RAG system parameters.
+
+---
+
+### Project Structure
+
+Understanding the layout of the repository will help you modify the core logic.
+
+<Files>
+  <Folder name="docs" defaultOpen>
+    <Folder name="content" defaultOpen>
+       <Folder name="docs" defaultOpen>
+            <Folder name="guides" />
+            <Folder name="reference" />
+            <File name="index.mdx" />
+       </Folder>
+    </Folder>
+  </Folder>
+  <Folder name="data">
+    <File name="movies_with_embeddings.csv" />
+  </Folder>
+  <File name="app.py" />
+  <File name="retrieval_strategies_mongodb_llamaindex.ipynb" />
+  <File name=".env" />
+</Files>
+
+---
+
+### Configuration Reference
+
+The following environment variables and settings are used to configure the system.
+
+#### Environment Variables
+
+<TypeTable
+  type={{
+    MONGODB_URI: {
+      description: 'The connection string for your MongoDB Atlas cluster.',
+      type: 'string',
+    },
+    DB_NAME: {
+      description: 'Database name for the movie collection.',
+      type: 'string',
+      default: 'movie_recommender',
+    },
+    COLLECTION_NAME: {
+      description: 'Collection where movie documents are stored.',
+      type: 'string',
+      default: 'movies',
+    },
+    GOOGLE_API_KEY: {
+      description: 'Gemini API key for LLM and Embeddings.',
+      type: 'string',
+    },
+  }}
+/>
+
+#### LLM & Embedding Settings
+
+<TypeTable
+  type={{
+    model_name: {
+      description: 'The AI model to use for generating responses.',
+      type: 'string',
+      default: 'models/gemini-2.5-flash',
+    },
+    embedding_dimensionality: {
+      description: 'Dimensions of the generated vector embeddings.',
+      type: 'number',
+      default: 3072,
+    },
+  }}
+/>
+
+---
+
+### Customizing the Vector Search
+
+If you want to add more metadata fields for filtering, you must update the **Atlas Vector Search Index** definition in the MongoDB Atlas UI.
+
+<Callout type="important">
+  Any changes to your metadata fields (e.g., adding `Director` or `Year`) must be indexed before they can be used in your queries.
+</Callout>
+
+```json
+{
+  "fields": [
+    {
+      "type": "vector",
+      "path": "embedding",
+      "numDimensions": 3072,
+      "similarity": "cosine"
+    },
+    { "type": "filter", "path": "metadata.rating" },
+    { "type": "filter", "path": "metadata.languages" }
+  ]
+}
+```

@@ -1,0 +1,80 @@
+---
+title: Retrieval Strategies
+description: Understanding the different ways movies are found in the system.
+icon: Search
+---
+
+# Retrieval Strategies
+
+Our RAG system provides multiple search modes to balance between conceptual similarity and keyword precision.
+
+### Search Modes
+
+<Accordions type="single">
+  <Accordion title="Semantic Search (Default)">
+    Uses vector embeddings to find movies conceptually similar to the user's query.
+    
+    - **Pros:** Returns results that are related by theme and plot, even without matching words.
+    - **Cons:** May occasionally miss specific titles or named entities if they aren't strongly emphasized in the vector space.
+    
+    ```python
+    get_recommendations(query="Action movies about humans fighting machines", mode="default")
+    ```
+  </Accordion>
+
+  <Accordion title="Hybrid Search">
+    Combines **Vector Search** with **Full-Text Search** for a balanced result.
+    
+    - **Alpha Parameter:** Controls the weight between Vector (1.0) and Text (0.0). Using `alpha=0.5` gives equal weight to both.
+    - **Best for:** Complex queries where specific keywords matter as much as general concepts.
+    
+    ```python
+    get_recommendations(query="Robots vs Humans", mode="hybrid", alpha=0.5)
+    ```
+  </Accordion>
+
+  <Accordion title="Text Search">
+    Uses traditional keyword-based indexing via Atlas Search.
+    
+    - **Pros:** Perfect for finding exact movie titles or specific actors mentioned in the description.
+    
+    ```python
+    get_recommendations(query="Terminator", mode="text_search")
+    ```
+  </Accordion>
+
+  <Accordion title="Metadata Filtering">
+    Restricts results according to specific movie properties like **rating** or **language**.
+    
+    ```python
+    from llama_index.core.vector_stores import MetadataFilters, MetadataFilter, FilterOperator
+
+    filters = MetadataFilters(
+        filters=[
+            MetadataFilter(key="rating", value=7.0, operator=FilterOperator.GT),
+            MetadataFilter(key="languages", value="English", operator=FilterOperator.EQ),
+        ]
+    )
+
+    get_recommendations(query="Futuristic war", mode="hybrid", alpha=0.7, filters=filters)
+    ```
+  </Accordion>
+</Accordions>
+
+<Callout type="idea">
+  **Recommendation:** Hybrid search with an alpha of 0.7 is often the "sweet spot" for recommendation tasks as it prioritizes semantic meaning but avoids hallucinating unrelated movies when specific keywords are present.
+</Callout>
+
+### Implementation Details
+
+All retrieval is handled by the `get_recommendations` function, which maps the `mode` parameter to the underlying `VectorStoreQueryMode`.
+
+```python
+def get_recommendations(query: str, mode: str = "default", **kwargs):
+    query_engine = vector_store_index.as_query_engine(
+        similarity_top_k=5, 
+        vector_store_query_mode=mode, 
+        **kwargs
+    )
+    # ... process results ...
+```

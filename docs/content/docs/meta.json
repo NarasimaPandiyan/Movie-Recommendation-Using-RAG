@@ -1,0 +1,15 @@
+{
+  "pages": [
+    "index",
+    "---User Guides---",
+    "getting-started",
+    "ui-guide",
+    "troubleshooting",
+    "---Technical Reference---",
+    "architecture",
+    "data-ingestion",
+    "retrieval-strategies",
+    "evaluation",
+    "advanced-usage"
+  ]
+}

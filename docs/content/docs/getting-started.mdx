@@ -1,0 +1,73 @@
+---
+title: Getting Started
+description: Steps to set up the Movie Recommendation RAG environment.
+icon: Rocket
+---
+
+# Getting Started
+
+Follow these steps to set up the project locally and begin querying your movie database.
+
+### Prerequisites
+
+*   **Python 3.9+** (Conda or Venv recommended)
+*   **MongoDB Atlas Account** (with a free tier cluster)
+*   **Google Gemini API Key**
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/mageshboopath1/Movie-Recommendation-Using-RAG.git
+cd Movie-Recommendation-Using-RAG
+```
+
+### 2. Install Dependencies
+
+The project uses several libraries including `llama-index`, `pymongo`, and `google-genai`.
+
+<Tabs items={['npm', 'pnpm', 'yarn']}>
+  <Tab value="npm">
+    ```bash
+    npm install
+    # Note: If using Conda as suggested, run:
+    # conda create -n llamaindex python=3.14
+    # conda activate llamaindex
+    # pip install -r requirements.txt
+    ```
+  </Tab>
+  <Tab value="pnpm">
+    ```bash
+    pnpm install
+    ```
+  </Tab>
+  <Tab value="yarn">
+    ```bash
+    yarn install
+    ```
+  </Tab>
+</Tabs>
+
+<Callout type="warn">
+  Ensure your `llama-index` version is up-to-date, as recent versions changed how Gemini is integrated.
+</Callout>
+
+### 3. Database Preparation
+
+The movie data is currently provided as a CSV file in the `data/` directory.
+
+1.  Log in to your **MongoDB Atlas** dashboard.
+2.  Create a new cluster and database named `movie_recommender`.
+3.  Ensure your IP address is whitelisted in **Network Access**.
+4.  Copy your connection string for use in the `.env` file.
+
+### 4. Running the App
+
+Once configured, you can launch the interactive interface:
+
+```bash
+python app.py
+```
+
+<Callout type="success">
+  You're all set! Now you can start asking for movie recommendations.
+</Callout>

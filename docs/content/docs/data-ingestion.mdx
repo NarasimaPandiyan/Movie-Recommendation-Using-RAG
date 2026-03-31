@@ -1,0 +1,70 @@
+---
+title: Data Ingestion
+description: Learn how movies are processed and indexed for vector search.
+icon: Database
+---
+
+# Data Ingestion Pipeline
+
+The ingestion process transforms static movie descriptions into active, searchable knowledge.
+
+### Processing Steps
+
+<Steps>
+  <Step>
+    ### Loading the Dataset
+    We start with a CSV file containing movie titles, summaries, ratings, genres, and languages.
+    ```python
+    import pandas as pd
+    data = pd.read_csv("./data/movies_with_embeddings.csv")
+    ```
+  </Step>
+
+  <Step>
+    ### LlamaIndex Documents
+    Each row is converted into a `Document` object. This creates a clean interface for embedding and indexing while preserving metadata.
+    ```python
+    from llama_index.core import Document
+    
+    documents = [
+        Document(
+            text=row['combined_text'],
+            metadata={
+                "title": row.get('title', 'Unknown'),
+                "rating": row.get('rating', 0),
+                "languages": row.get('languages_list', []),
+                "genres": row.get('genres_list', [])
+            }
+        )
+        for _, row in data.iterrows() 
+    ]
+    ```
+  </Step>
+
+  <Step>
+    ### Vectorization with Gemini
+    We use the `gemini-embedding-001` model to generate 3072-dimension embeddings for each document. These represent the semantic "coordinates" of the movie.
+  </Step>
+
+  <Step>
+    ### MongoDB Storage
+    Finally, the documents are stored in MongoDB Atlas via the `MongoDBAtlasVectorSearch` store.
+  </Step>
+</Steps>
+
+<Callout type="important" title="Index Configuration">
+  After ingestion, you **must** create a Vector Search Index in your MongoDB Atlas UI named `vector_index`.
+  - **Index Name:** `vector_index`
+  - **Type:** `vectorSearch`
+  - **Path:** `embedding` (3072 dimensions, Cosine similarity)
+</Callout>
+
+### Handling Existing Data
+
+The app includes logic to skip ingestion if the database already contains documents, saving time and API costs.
+
+```python
+if collection.count_documents({}) > 0:
+    print("Found data in 'movies'. Connecting to existing index...")
+    vector_store_index = VectorStoreIndex.from_vector_store(vector_store)
+```

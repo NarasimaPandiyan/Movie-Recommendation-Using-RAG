@@ -1,0 +1,72 @@
+---
+title: RAG Evaluation
+description: How to measure the performance and accuracy of the movie recommendation system.
+icon: ChartBar
+---
+
+# RAG Evaluation Framework
+
+To ensure the movie recommendations are accurate and grounded, we use automated evaluation metrics that measure **Faithfulness**, **Relevance**, and **Retrieval Accuracy**.
+
+### Automated Metrics
+
+We recommend using the **DeepEval** or **Ragas** frameworks to benchmark your RAG pipeline.
+
+<Accordions>
+  <Accordion title="Faithfulness (Groundedness)">
+    Measures if the AI's answer is derived solely from the retrieved movie data, helping to prevent hallucinations.
+  </Accordion>
+  <Accordion title="Answer Relevance">
+    How well the recommended movies actually match the user's specific query and filters.
+  </Accordion>
+  <Accordion title="Contextual Precision">
+    Checks if the most relevant movies appear at the top of the retrieval results.
+  </Accordion>
+</Accordions>
+
+---
+
+### Running Evaluations
+
+Follow these steps to generate a performance report for your RAG system.
+
+<Steps>
+  <Step>
+    #### Prepare your Evaluation Set
+    Create a dataset of common user queries and the "Ground Truth" (ideal movies) using the `fiqa` or `scifact` benchmarking formats.
+  </Step>
+  <Step>
+    #### Trigger the Evaluation Script
+    Run the evaluation suite using your preferred framework (e.g., DeepEval).
+    
+    ```python
+    from deepeval.metrics import FaithfulnessMetric
+    from deepeval.test_case import LLMTestCase
+
+    # Example test case
+    metric = FaithfulnessMetric(threshold=0.7)
+    test_case = LLMTestCase(
+        input="Recommend a sci-fi heist movie.",
+        actual_output=response.response,
+        retrieval_context=[node.get_content() for node in response.source_nodes]
+    )
+    metric.measure(test_case)
+    print(metric.score)
+    ```
+  </Step>
+  <Step>
+    #### Analyze results
+    Review the scores (0.0 to 1.0) and identify areas where the retrieval model needs tuning (e.g., adjusting the Alpha parameter).
+  </Step>
+</Steps>
+
+---
+
+### Best Practices for Benchmarking
+
+<Callout type="warning">
+  **Consistency counts**: Always use a fixed LLM (like `Gemini 2.5 Flash`) for evaluation to keep your scores comparable.
+</Callout>
+
+*   **Diverse Queries**: Test with both broad queries ("action movies") and very specific ones ("90s heist comedy with Brad Pitt").
+*   **Thresholding**: Aim for a **Faithfulness score > 0.8** to ensure your MovieBot is safe for production.
